@@ -51,9 +51,41 @@
         </div>
       </el-header>
 
-      <el-main > 
-        <router-view />
-      </el-main>
+      <el-main>
+  <router-view />
+
+  <!-- 固定搜索按钮 -->
+  <el-button 
+    icon="el-icon-search" 
+    circle 
+    class="fixed-button"
+    @click="toggleSearch"
+  ></el-button>
+
+  <!-- 搜索框，当 showSearch 为 true 时显示 -->
+  <div v-if="showSearch" class="search-container">
+    <el-input 
+      v-model="searchQuery" 
+      placeholder="请输入搜索内容" 
+      clearable
+      class="search-input"
+      @keydown.enter="search"
+    >
+      <!-- 搜索按钮，放在输入框右边 -->
+      <template #append>
+        <el-button 
+          class="search-btn" 
+          size="small" 
+          @click="search"
+        >
+          搜索
+        </el-button>
+      </template>
+    </el-input>
+  </div>
+</el-main>
+
+
 
       <!-- Dynamic footer -->
       <el-footer class="footer" style="height: 50px;" v-show="showFooter">
@@ -81,6 +113,8 @@ export default {
     return {
       activeIndex: '1', // 默认选中的菜单项
       isLoggedIn: false,
+      showSearch: false, // 控制搜索框显示与隐藏
+      searchQuery: '',  // 存储用户输入的搜索内容
     };
   },
   computed: {
@@ -104,6 +138,18 @@ export default {
       this.$router.push('/login'); // 跳转到登录页面
       console.log("login");
     },
+    toggleSearch() {
+      this.showSearch = !this.showSearch; // 切换搜索框显示状态
+    },
+    search() {
+    console.log('搜索内容：', this.searchQuery);
+
+    // Redirect to the store page with the search query as a query parameter
+    this.$router.push({ path: '/store', query: { search: this.searchQuery } });
+
+    // After the search, close the search input field
+    this.showSearch = false;
+  }
   },
 };
 </script>
@@ -116,6 +162,16 @@ export default {
   flex-direction: column;
   height: 100vh; /* 设置页面高度为视口高度 */
 }
+.el-main {
+  position: relative; /* 确保 el-main 是定位容器 */
+}
+
+.fixed-button {
+  position: fixed;
+  right: 20px; /* 距离右边20px */
+  bottom: 60px; /* 距离底部20px */
+  z-index: 1000; /* 确保按钮在其他元素之上 */
+}
 
 .el-header {
   display: flex; /* 使用 flex 布局 */
@@ -123,7 +179,24 @@ export default {
   padding: 0 20px; /* 内边距调整 */
   background-color: #f8f6f7;
 }
+.search-container {
+  position: fixed;
+  right: 70px; /* 与按钮保持一定的间距 */
+  bottom: 60px; /* 与按钮对齐 */
+  z-index: 999;
+  width: 250px; /* 控制搜索框的宽度 */
+  transition: all 0.3s ease; /* 添加过渡效果 */
+}
 
+.search-input {
+  width: 100%; /* 让输入框填满容器 */
+}
+
+.search-btn {
+  margin-top: 10px;
+  width: 100%;
+
+}
 .el-dropdown-item {
   color: #d1ae6e; /* 设置下拉项颜色 */
 }

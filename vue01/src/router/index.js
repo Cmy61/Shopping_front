@@ -7,6 +7,7 @@ import { Store } from 'vuex'
 import CartPage from '@/views/CartPage.vue'
 import SignupPage from '@/views/SignupPage.vue'
 import LoginPage from '@/views/LoginPage.vue'
+import ProductDetail from '@/views/ProductDetail.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -47,7 +48,13 @@ const routes = [
     path: '/login',
     name: 'login',
     component: LoginPage,
-  }
+  },
+  {
+    path: '/product/:id', // 动态路由，基于商品 ID
+    name: 'ProductDetail',
+    component: ProductDetail,
+    props: true, // 传递路由参数作为组件的 props
+  },
 ]
 
 const router = new VueRouter({
